@@ -24,7 +24,9 @@ jobs:
     
     - name: Hello
       run: pwd
-        
+    - name: Install Conan
+      run: pip3 install conan
+      
     - name: Conan Install
       run: conan --version 
 
