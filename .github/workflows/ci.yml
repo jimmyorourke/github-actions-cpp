@@ -27,7 +27,9 @@ jobs:
     - name: Hello
       run: pwd
     - name: Install Conan
-      run: pip3 install conan
+      #if: startsWith(matrix.config.os, 'windows')
+      # or set shell: bash and if [ "$RUNNER_OS" == "Linux" ]; then
+      run: pip3 install conan ninja
       
     - name: Conan Install
       # https://stackoverflow.com/a/42163789
