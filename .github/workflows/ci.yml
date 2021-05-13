@@ -28,6 +28,7 @@ jobs:
       run: pip3 install conan
       
     - name: Conan Install
+      # https://stackoverflow.com/a/42163789
       run: conan install . -if ${{github.workspace}}/build -s compiler.libcxx=libstdc++11 
 
     - name: Configure CMake
