@@ -27,7 +27,10 @@ jobs:
     - uses: actions/checkout@v2
     
     - name: Conan Install
-      run: conan install ../.. 
+      run: |
+        pwd
+        conan --version
+        conan install ../.. 
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
