@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <simple_math.hpp>
+#include <simple_math/simple_math.hpp>
 
 TEST(Basic, Add) {
     EXPECT_EQ(simple_math::add(3, 4), 7);

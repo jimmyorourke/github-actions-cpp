@@ -1,4 +1,4 @@
-#include "simple_math.hpp"
+#include <simple_math/simple_math.hpp>
 
 #include <iostream>
 
