@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ $default-branch ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main] # why doesn't [ $default-branch ] seem to work???
   workflow_dispatch: # enable manual trigger from the UI
 
 env:
