@@ -4,5 +4,5 @@
 
 int main() {
     std::cout << "hello world\n";
-    std::cout << simple_math::add(3, 4) << "\n";
+    std::cout << simple_math::add(3, 5) << "\n";
 }
