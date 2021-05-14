@@ -17,8 +17,6 @@ jobs:
   # The implication then is that using a build matrix to run a job in multiple configurations will run them sequentially.
   # To make them run in parallel, separate jobs are required (resulting in duplication of step definitions).
   build:
-    name: ${ { matrix.config.name } }
-    runs-on: ${ { matrix.config.os } }
     strategy:
       fail-fast: false
       matrix:
@@ -39,7 +37,8 @@ jobs:
             os: macos-latest,
             generator: "Ninja"
           }
-    
+    name: ${{matrix.config.name}}
+    runs-on: ${{matrix.config.os}}
     steps:
     - uses: actions/checkout@v2
   
