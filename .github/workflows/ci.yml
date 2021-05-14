@@ -5,43 +5,68 @@ on:
     branches: [ $default-branch ]
   pull_request:
     branches: [ $default-branch ]
-  workflow_dispatch:
+  workflow_dispatch: # enable manual trigger from the UI
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE: Release
 
 jobs:
+  # Jobs run in parallel, unless depdendencies are created:
+  # https://docs.github.com/en/actions/learn-github-actions/managing-complex-workflows#creating-dependent-jobs
+  # The implication then is that using a build matrix to run a job in multiple configurations will run them sequentially.
+  # To make them run in parallel, separate jobs are required (resulting in duplication of step definitions).
   build:
-    # The CMake configure and build commands are platform agnostic and should work equally
-    # well on Windows or Mac.  You can convert this to a matrix build if you need
-    # cross-platform coverage.
-    # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
-    runs-on: ubuntu-latest
-    #runs-on: macos-latest
-    #runs-on: windows-latest
+    name: ${ { matrix.config.name } }
+    runs-on: ${ { matrix.config.os } }
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+        - {
+            name: "Windows MSVC",
+            os: windows-latest,
+            # let's use MSBuild with VS solution files instead of Ninja just for fun
+            generator: "Visual Studio 16 2019"
+          }
+        - {
+            name: "Ubuntu GCC",
+            os: ubuntu-latest,
+            generator: "Ninja"
+          }
+        - {
+            name: "macOS Clang",
+            os: macos-latest,
+            generator: "Ninja"
+          }
     
     steps:
     - uses: actions/checkout@v2
-    
-    - name: Hello
-      run: pwd
+  
     - name: Install Conan
-      #if: startsWith(matrix.config.os, 'windows')
-      # or set shell: bash and if [ "$RUNNER_OS" == "Linux" ]; then
+      # cool, pip is a convenient cross-platform way to install ninja too!
+      # Consider using a cache 
+      # https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows
+      # https://github.com/actions/cache/blob/main/examples.md#python---pip
       run: pip3 install conan ninja
       
     - name: Conan Install
+      # Consider using a cache
+      # https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows
+      # https://github.com/turtlebrowser/conan-cache/blob/master/README.md
+      
       # https://stackoverflow.com/a/42163789
+      # https://docs.conan.io/en/latest/howtos/manage_gcc_abi.html
+      if runner.os == 'Linux': 
       run: conan install . -if ${{github.workspace}}/build -s compiler.libcxx=libstdc++11
-      #run: conan install . -if ${{github.workspace}}/build
+      if runner.os != 'Linux': # clunky but there's no else statement
+      run: conan install . -if ${{github.workspace}}/build
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-      # surprisingly, running vcvars to set env variables is not needed
-      #run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -G "Visual Studio 16 2019"
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -G Ninja
+      # surprisingly, running vcvars to set env variables is not needed for windows
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -G ${{matrix.config.generators}}
 
     - name: Build
       # Build your program with the given configuration
@@ -51,4 +76,4 @@ jobs:
       working-directory: ${{github.workspace}}/build
       # Execute tests defined by the CMake configuration.  
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-      run: ctest -C ${{env.BUILD_TYPE}}
+      run: ctest -V -C ${{env.BUILD_TYPE}}
