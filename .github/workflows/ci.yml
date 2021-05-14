@@ -37,25 +37,25 @@ jobs:
     runs-on: ${{matrix.config.os}}
     steps:
     - uses: actions/checkout@v2
-  
+
     - name: Install Conan
       # cool, pip is a convenient cross-platform way to install ninja too!
-      # Consider using a cache 
+      # Consider using a cache
       # https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows
       # https://github.com/actions/cache/blob/main/examples.md#python---pip
       run: pip3 install conan ninja
-      
+
     - name: Conan Install (Linux)
       # Consider using a cache
       # https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows
       # https://github.com/turtlebrowser/conan-cache/blob/master/README.md
-      
+
       # https://stackoverflow.com/a/42163789
       # https://docs.conan.io/en/latest/howtos/manage_gcc_abi.html
       if: runner.os == 'Linux'
       run: conan install . -if ${{github.workspace}}/build -s compiler.libcxx=libstdc++11
 
-    - name: Conan Install (Linux) 
+    - name: Conan Install (Default)
       if: runner.os != 'Linux' # clunky but there's no else statement
       run: conan install . -if ${{github.workspace}}/build
 
@@ -71,6 +71,6 @@ jobs:
 
     - name: Test
       working-directory: ${{github.workspace}}/build
-      # Execute tests defined by the CMake configuration.  
+      # Execute tests defined by the CMake configuration.
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: ctest -V -C ${{env.BUILD_TYPE}}
