@@ -57,11 +57,11 @@ jobs:
       
       # https://stackoverflow.com/a/42163789
       # https://docs.conan.io/en/latest/howtos/manage_gcc_abi.html
-      if runner.os == 'Linux'
+      if: runner.os == 'Linux'
       run: conan install . -if ${{github.workspace}}/build -s compiler.libcxx=libstdc++11
    # ick
    - name: Conan Install (Linux) 
-      if runner.os != 'Linux' # clunky but there's no else statement
+      if: runner.os != 'Linux' # clunky but there's no else statement
       run: conan install . -if ${{github.workspace}}/build
 
     - name: Configure CMake
