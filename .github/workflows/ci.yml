@@ -1,4 +1,4 @@
-name: C/C++ CMake CI
+name: CI
 
 on:
   push:
