@@ -1,8 +1,11 @@
-# From https://github.com/lefticus/cppbestpractices/blob/master/02-Use_the_Tools_Available.md#compilers
+# Many warnings from https://github.com/lefticus/cppbestpractices/blob/master/02-Use_the_Tools_Available.md#compilers
 
+# https://docs.microsoft.com/en-us/cpp/build/reference/compiler-option-warning-level?view=msvc-160
+# https://docs.microsoft.com/en-us/cpp/preprocessor/compiler-warnings-that-are-off-by-default?view=msvc-160
 set(MSVC_WARNINGS
     /W4 # Baseline reasonable warnings
     # /Wall # Also warns on files included from the standard library, so it's not very useful and creates too many extra warnings.
+    /w14062 # enumerator 'identifier' in switch of enum 'enumeration' is not handled, ie -Wswitch equivalent
     /w14242 # 'identifier': conversion from 'type1' to 'type1', possible loss of data
     /w14254 # 'operator': conversion from 'type1:field_bits' to 'type2:field_bits', possible loss of data
     /w14263 # 'function': member function does not override any base class virtual member function
