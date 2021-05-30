@@ -1,3 +1,5 @@
+#pragma once
+
 // As simple as it gets
 
 namespace simple_math {
