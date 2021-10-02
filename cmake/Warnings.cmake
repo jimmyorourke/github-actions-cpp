@@ -53,7 +53,8 @@ set(GCC_WARNINGS
     -Wuseless-cast # warn if you perform a cast to the same type
 )
 
-# Defining a macro requires its invocation separate from the inclusion of this file, but allows it to be done after including and building any 3rd party libs, etc. Top-down directory scoping will apply it to any targets thereafter.
+# Defining a macro requires its invocation separate from the inclusion of this file, but allows it to be done after
+# including and building any 3rd party libs, etc. Top-down directory scoping will apply it to any targets thereafter.
 macro(enable_warnings)
     # Using a conditional generator expresssion of the form $<$<CXX_COMPILER_ID:MSVC>:"${MSVC_WARNINGS}"> is tricky
     # ${MSVC_WARNINGS} must then be a string and some contortion would be required to make it play nicely with
